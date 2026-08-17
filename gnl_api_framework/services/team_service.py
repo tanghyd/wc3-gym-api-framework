@@ -65,7 +65,7 @@ class TeamService(BaseGNLBackendService):
     
     def get_team_for_season(self, season_id: int, team_id: int):
         logger.debug(f"Fetching team with ID: {team_id} for season ID: {season_id}")
-        result = self.get(f"teams/{team_id}/season/{season_id}")
+        result = self.get(f"teams/{team_id}/seasons/{season_id}")
         logger.debug(f"Received response: {result}")
         return Team(result)
 
