@@ -42,7 +42,8 @@ class SeriesService(BaseGNLBackendService):
     
     def get_all_series(self):
         logger.debug("Fetching all series")
-        series_l = self.get("series")
+        # No plain list route on the backend, so match every row by id.
+        series_l = self.search("series/search", "id > 0")
         logger.debug(f"Received response: {series_l}")
         l = [Series(series) for series in series_l]
         return l
