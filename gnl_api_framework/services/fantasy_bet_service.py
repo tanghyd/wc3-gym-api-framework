@@ -39,19 +39,19 @@ class FantasyBetService(BaseGNLBackendService):
         logger.debug(f"Fantasy bet with ID {bet_id} deleted successfully")
         return True
     
-    def search_bet(self, search_string):
+    def search_bet(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching bets with query: {search_string}")
-        bets = self.search("fantasy/bets/search", search_string)
+        bets = self.search("fantasy/bets/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {bets}")
         l = [FantasyBet(bet) for bet in bets]
         return l
 
-    def get_all_bets(self):
+    def get_all_bets(self, limit: int = None, offset: int = None):
         logger.debug("Fetching all fantasy bets")
-        bets = self.get("fantasy/bets")
+        bets = self.get("fantasy/bets", limit=limit, offset=offset)
         logger.debug(f"Received response: {bets}")
         l = [FantasyBet(bet) for bet in bets]
         return l

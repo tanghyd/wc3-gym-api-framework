@@ -69,14 +69,23 @@ class BaseGNLBackendService(ABC):
             endpoint = endpoint[1:]
         return f"{self.url}/{endpoint}"
 
-    def get(self, endpoint, params=None):
+    def get(self, endpoint, params=None, limit: int = None, offset: int = None):
+        params = self.add_paging_params(params, limit, offset)
         return self.send_request(method=self.HTTPMethods.GET, url=self.buildURL(endpoint), params=params)
 
-    def search(self, endpoint: str, search_str:str):
-        if search_str:
-            return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint), params={'query':search_str})
-        else:
-            return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint))
+    def search(self, endpoint: str, search_str: str = None, limit: int = None, offset: int = None):
+        params = {'query': search_str} if search_str else {}
+        params = self.add_paging_params(params, limit, offset)
+        return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint), params=params)
+
+    @staticmethod
+    def add_paging_params(params: dict, limit: int = None, offset: int = None):
+        params = dict(params) if params else {}
+        if limit is not None:
+            params['limit'] = limit
+        if offset is not None:
+            params['offset'] = offset
+        return params or None
 
 
     def post(self, endpoint, data: dict):

@@ -39,19 +39,19 @@ class TeamService(BaseGNLBackendService):
         logger.debug(f"Team with ID {team_id} deleted successfully")
         return True
     
-    def search_team(self, search_string):
+    def search_team(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching teams with query: {search_string}")
-        teams = self.search("teams/search", search_string)
+        teams = self.search("teams/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {teams}")
         l = [Team(team) for team in teams]
         return l
 
-    def get_all_teams(self):
+    def get_all_teams(self, limit: int = None, offset: int = None):
         logger.debug("Fetching all teams")
-        teams = self.get("teams")
+        teams = self.get("teams", limit=limit, offset=offset)
         logger.debug(f"Received response: {teams}")
         l = [Team(team) for team in teams]
         return l

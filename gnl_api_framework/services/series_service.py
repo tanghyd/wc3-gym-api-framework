@@ -40,34 +40,34 @@ class SeriesService(BaseGNLBackendService):
         logger.debug(f"Series with ID {series_id} deleted successfully")
         return True
     
-    def get_all_series(self):
+    def get_all_series(self, limit: int = None, offset: int = None):
         logger.debug("Fetching all series")
         # No plain list route on the backend, so match every row by id.
-        series_l = self.search("series/search", "id > 0")
+        series_l = self.search("series/search", "id > 0", limit=limit, offset=offset)
         logger.debug(f"Received response: {series_l}")
         l = [Series(series) for series in series_l]
         return l
 
-    def search_series(self, search_string):
+    def search_series(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching series with query: {search_string}")
-        series_l = self.search("series/search", search_string)
+        series_l = self.search("series/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {series_l}")
         l = [Series(series) for series in series_l]
         return l
-    
-    def search_series_by_season(self, season_id, search_string=None):
+
+    def search_series_by_season(self, season_id, search_string=None, limit: int = None, offset: int = None):
         logger.debug(f"Searching series for season[{season_id}] with query: {search_string}")
-        series_l = self.search(f"series/season/{season_id}/search", search_string)
+        series_l = self.search(f"series/season/{season_id}/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {series_l}")
         l = [Series(series) for series in series_l]
         return l
-    
-    def search_series_by_season_and_playday(self, season_id, playday, search_string=None):
+
+    def search_series_by_season_and_playday(self, season_id, playday, search_string=None, limit: int = None, offset: int = None):
         logger.debug(f"Searching series for season[{season_id}] with query: {search_string}")
-        series_l = self.search(f"series/season/{season_id}/playday/{playday}/search", search_string)
+        series_l = self.search(f"series/season/{season_id}/playday/{playday}/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {series_l}")
         l = [Series(series) for series in series_l]
         return l
