@@ -5,12 +5,12 @@ from gnl_api_framework.model.map import Map
 logger = logging.getLogger(__name__)
 
 class MapService(BaseGNLBackendService):
-    def search_maps(self, search_string):
+    def search_maps(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching maps with query: {search_string}")
-        maps = self.search("maps/search", search_string)
+        maps = self.search("maps/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {maps}")
         l = [Map(map) for map in maps]
         return l
@@ -48,9 +48,9 @@ class MapService(BaseGNLBackendService):
         logger.debug(f"Map with ID {map_id} deleted successfully")
         return True
 
-    def get_all_maps(self):
+    def get_all_maps(self, limit: int = None, offset: int = None):
         logger.debug("Fetching all maps")
-        maps = self.get("maps")
+        maps = self.get("maps", limit=limit, offset=offset)
         logger.debug(f"Received response: {maps}")
         l = [Map(map) for map in maps]
         return l

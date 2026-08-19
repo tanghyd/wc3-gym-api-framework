@@ -39,19 +39,19 @@ class SeasonService(BaseGNLBackendService):
         logger.debug(f"Season with ID {season_id} deleted successfully")
         return True
     
-    def get_all_seasons(self):
+    def get_all_seasons(self, limit: int = None, offset: int = None):
         logger.debug("Fetching all seasons")
-        seasons = self.get("seasons")
+        seasons = self.get("seasons", limit=limit, offset=offset)
         logger.debug(f"Received response: {seasons}")
         l = [Season(season) for season in seasons]
         return l
-    
-    def search_seasons(self, search_string):
+
+    def search_seasons(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching seasons with query: {search_string}")
-        seasons = self.search("seasons/search", search_string)
+        seasons = self.search("seasons/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {seasons}")
         l = [Season(season) for season in seasons]
         return l

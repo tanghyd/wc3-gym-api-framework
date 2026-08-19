@@ -21,12 +21,12 @@ class UserService(BaseGNLBackendService):
         logger.debug(f"Found user: {user}")
         return user
 
-    def search_users(self, search_string):
+    def search_users(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching users with query: {search_string}")
-        users = self.search("users/search", search_string)
+        users = self.search("users/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {users}")
         l = [User(user) for user in users]
         return l
@@ -64,9 +64,9 @@ class UserService(BaseGNLBackendService):
         logger.debug(f"User with ID {user_id} deleted successfully")
         return True
 
-    def get_all_users(self):
+    def get_all_users(self, limit: int = None, offset: int = None):
         logger.debug("Fetching all users")
-        users = self.get("users")
+        users = self.get("users", limit=limit, offset=offset)
         logger.debug(f"Received response: {users}")
         l = [User(user) for user in users]
         return l

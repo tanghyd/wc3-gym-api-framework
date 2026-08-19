@@ -39,12 +39,12 @@ class MatchService(BaseGNLBackendService):
         logger.debug(f"Match with ID {match_id} deleted successfully")
         return True
     
-    def search_matches(self, search_string):
+    def search_matches(self, search_string, limit: int = None, offset: int = None):
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
         logger.debug(f"Searching matches with query: {search_string}")
-        matches = self.search("matches/search", search_string)
+        matches = self.search("matches/search", search_string, limit=limit, offset=offset)
         logger.debug(f"Received response: {matches}")
         l = [Match(match) for match in matches]
         return l
