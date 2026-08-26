@@ -96,9 +96,11 @@ class BaseGNLBackendService(ABC):
         else:
             return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"})
 
-    def delete(self, endpoint):
+    def delete(self, endpoint, data=None):
         if self.is_token_expired():
             self.login()
+        if data:
+            return self.send_request(method=self.HTTPMethods.DELETE, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
         return self.send_request(method=self.HTTPMethods.DELETE, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"})
 
     def put(self, endpoint, data: dict):

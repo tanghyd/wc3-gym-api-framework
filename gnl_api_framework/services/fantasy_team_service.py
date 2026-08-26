@@ -64,7 +64,7 @@ class FantasyTeamService(BaseGNLBackendService):
             logger.error(f"No player IDs defined: {player_ids}")
             raise Exception(f"No player ids defined: {player_ids}")
         logger.debug(f"Adding players {player_ids} to fantasy team with ID: {team_id}")
-        result = self.post(f"fantasy/teams/addPlayers/{team_id}", {"player_ids":player_ids})
+        result = self.post(f"fantasy/teams/{team_id}/players", {"player_ids":player_ids})
         logger.debug(f"Received response: {result}")
         return FantasyTeam(result)
     
@@ -76,6 +76,6 @@ class FantasyTeamService(BaseGNLBackendService):
             logger.error(f"No player IDs defined: {player_ids}")
             raise Exception(f"No player ids defined: {player_ids}")
         logger.debug(f"Removing players {player_ids} from team with ID: {team_id}")
-        result = self.post(f"fantasy/teams/removePlayers/{team_id}", {"player_ids":player_ids})
+        result = self.delete(f"fantasy/teams/{team_id}/players", {"player_ids":player_ids})
         logger.debug(f"Received response: {result}")
         return FantasyTeam(result)
