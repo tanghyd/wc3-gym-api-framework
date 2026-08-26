@@ -80,7 +80,7 @@ class TeamService(BaseGNLBackendService):
             logger.error(f"No player IDs defined: {player_ids}")
             raise Exception(f"No player ids defined: {player_ids}")
         logger.debug(f"Adding players {player_ids} to team with ID: {team_id}")
-        result = self.post(f"teams/addPlayers/{team_id}/seasons/{season_id}", {"player_ids":player_ids})
+        result = self.post(f"teams/{team_id}/seasons/{season_id}/players", {"player_ids":player_ids})
         logger.debug(f"Received response: {result}")
         return Team(result)
     
@@ -95,6 +95,6 @@ class TeamService(BaseGNLBackendService):
             logger.error(f"No player IDs defined: {player_ids}")
             raise Exception(f"No player ids defined: {player_ids}")
         logger.debug(f"Removing players {player_ids} from team with ID: {team_id}")
-        result = self.post(f"teams/removePlayers/{team_id}/seasons/{season_id}", {"player_ids":player_ids})
+        result = self.delete(f"teams/{team_id}/seasons/{season_id}/players", {"player_ids":player_ids})
         logger.debug(f"Received response: {result}")
         return Team(result)

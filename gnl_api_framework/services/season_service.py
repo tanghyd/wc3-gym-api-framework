@@ -64,7 +64,7 @@ class SeasonService(BaseGNLBackendService):
             logger.error(f"No team IDs defined: {team_ids}")
             raise Exception(f"No team ids defined: {team_ids}")
         logger.debug(f"Adding teams {team_ids} to season with ID: {season_id}")
-        result = self.post(f"seasons/addTeams/{season_id}", {'team_ids' : team_ids})
+        result = self.post(f"seasons/{season_id}/teams", {'team_ids' : team_ids})
         logger.debug(f"Received response: {result}")
         return Season(result)
     
@@ -76,7 +76,7 @@ class SeasonService(BaseGNLBackendService):
             logger.error(f"No team IDs defined: {team_ids}")
             raise Exception(f"No team ids defined: {team_ids}")
         logger.debug(f"Removing teams {team_ids} from season with ID: {season_id}")
-        result = self.post(f"seasons/removeTeams/{season_id}", {'team_ids' : team_ids})
+        result = self.delete(f"seasons/{season_id}/teams", {'team_ids' : team_ids})
         logger.debug(f"Received response: {result}")
         return Season(result)
 
@@ -89,7 +89,7 @@ class SeasonService(BaseGNLBackendService):
             logger.error(f"No map IDs defined: {map_ids}")
             raise Exception(f"No map ids defined: {map_ids}")
         logger.debug(f"Adding maps {map_ids} to season with ID: {season_id}")
-        result = self.post(f"seasons/addMaps/{season_id}", {'map_ids' : map_ids})
+        result = self.post(f"seasons/{season_id}/maps", {'map_ids' : map_ids})
         logger.debug(f"Received response: {result}")
         return Season(result)
     
@@ -101,6 +101,6 @@ class SeasonService(BaseGNLBackendService):
             logger.error(f"No map IDs defined: {map_ids}")
             raise Exception(f"No map ids defined: {map_ids}")
         logger.debug(f"Removing maps {map_ids} from season with ID: {season_id}")
-        result = self.post(f"seasons/removeMaps/{season_id}", {'map_ids' : map_ids})
+        result = self.delete(f"seasons/{season_id}/maps", {'map_ids' : map_ids})
         logger.debug(f"Received response: {result}")
         return Season(result)
