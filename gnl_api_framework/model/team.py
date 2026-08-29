@@ -1,8 +1,9 @@
+from typing import Any
 from gnl_api_framework.model.user import User
 from gnl_api_framework.model.season_info import SeasonInfo
 
 class Team:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
         self.name = data.get('name')
         self.icon = data.get('icon')
@@ -20,14 +21,14 @@ class Team:
             seasons_info = [SeasonInfo(seasons_info) for seasons_info in seasons_info]
         self.seasons_info = seasons_info
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             'name': self.name,
             'icon' : self.icon,
             'discord_role' : self.discord_role
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         players_by_season_str = None
         if self.players_by_season:
             players_by_season_str = ", ".join(

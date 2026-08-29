@@ -1,9 +1,10 @@
+from typing import Any
 from gnl_api_framework.model.user import User
 from gnl_api_framework.model.season import Season
 from gnl_api_framework.model.series import Series
 
 class FantasyBet:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
         self.series_id = data.get('series_id')
         series = data.get('series')
@@ -28,7 +29,7 @@ class FantasyBet:
         self.bet_points = data.get('bet_points')
         self.bet_result = data.get('bet_result')
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             'id': self.id,
             'series_id': self.series_id,
@@ -39,7 +40,7 @@ class FantasyBet:
             'bet_result': self.bet_result
         }
     
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"FantasyBet(id={self.id}, "
             f"series={str(self.series)}, "

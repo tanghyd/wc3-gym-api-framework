@@ -6,13 +6,13 @@ logger = logging.getLogger(__name__)
 
 class MatchService(BaseGNLBackendService):
     
-    def get_match(self, match_id: int):
+    def get_match(self, match_id: int) -> Match:
         logger.debug(f"Fetching match with ID: {match_id}")
         result = self.get(f"matches/{match_id}")
         logger.debug(f"Received response: {result}")
         return Match(result)
     
-    def update_match(self, match_id, match: Match):
+    def update_match(self, match_id: int, match: Match) -> Match:
         if not match or not match_id:
             logger.error(f"Match or match ID not defined: {match}")
             raise Exception(f"Match or match id not defined: {match}")
@@ -21,7 +21,7 @@ class MatchService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Match(result)
     
-    def create_match(self, match: Match):
+    def create_match(self, match: Match) -> Match:
         if not match:
             logger.error(f"Match not defined: {match}")
             raise Exception(f"Match not defined: {match}")
@@ -30,7 +30,7 @@ class MatchService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Match(result)
     
-    def delete_match(self, match_id):
+    def delete_match(self, match_id: int) -> bool:
         if not match_id:
             logger.error(f"Match ID not defined: {match_id}")
             raise Exception(f"Match id not defined: {match_id}")
@@ -39,7 +39,7 @@ class MatchService(BaseGNLBackendService):
         logger.debug(f"Match with ID {match_id} deleted successfully")
         return True
     
-    def search_matches(self, search_string, limit: int = None, offset: int = None):
+    def search_matches(self, search_string: str, limit: int | None = None, offset: int | None = None) -> list[Match]:
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")

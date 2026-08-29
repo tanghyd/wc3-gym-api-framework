@@ -1,5 +1,8 @@
+from typing import Any
+
+
 class User:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
         self.name = data.get('name')
         self.battleTag = data.get('battleTag')
@@ -9,7 +12,7 @@ class User:
         self.country = data.get('country')
         self.fantasy_tier = data.get('fantasy_tier')
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             'name': self.name,
             'battleTag': self.battleTag,
@@ -20,7 +23,7 @@ class User:
             'fantasy_tier': self.fantasy_tier
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"User(id={self.id}, name={self.name}, "
             f"battleTag={self.battleTag}, discordTag={self.discordTag}, "

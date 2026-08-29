@@ -1,9 +1,10 @@
+from typing import Any
 from gnl_api_framework.model.team import Team
 from gnl_api_framework.model.season import Season
 from gnl_api_framework.model.map import Map
 
 class Match:
-    def __init__(self, data : dict):
+    def __init__(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
         self.team1_id = data.get('team1_id')
         team1 = data.get('team1')
@@ -27,7 +28,7 @@ class Match:
         self.team1_score = data.get('team1_score')
         self.team2_score = data.get('team2_score')
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             'team1_id': self.team1_id,
             'team2_id': self.team2_id,
@@ -39,7 +40,7 @@ class Match:
             'team2_score': self.team2_score
         }
     
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"Match(id={self.id}, "
             f"team1_id={self.team1_id}, team1={self.team1}, team1_score={self.team1_score} "

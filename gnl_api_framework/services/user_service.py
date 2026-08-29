@@ -5,7 +5,7 @@ from gnl_api_framework.model.user import User
 logger = logging.getLogger(__name__)
 
 class UserService(BaseGNLBackendService):
-    def getUserByDiscord(self, discord_name):
+    def get_user_by_discord(self, discord_name: str) -> User | None:
         if not discord_name:
             logger.error(f"Discord name not defined: {discord_name}")
             raise Exception(f"Discord name not defined: {discord_name}")
@@ -21,7 +21,7 @@ class UserService(BaseGNLBackendService):
         logger.debug(f"Found user: {user}")
         return user
 
-    def search_users(self, search_string, limit: int = None, offset: int = None):
+    def search_users(self, search_string: str, limit: int | None = None, offset: int | None = None) -> list[User]:
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
@@ -31,13 +31,13 @@ class UserService(BaseGNLBackendService):
         l = [User(user) for user in users]
         return l
 
-    def get_user(self, user_id: int):
+    def get_user(self, user_id: int) -> User:
         logger.debug(f"Fetching user with ID: {user_id}")
         result = self.get(f"users/{user_id}")
         logger.debug(f"Received response: {result}")
         return User(result)
 
-    def update_user(self, user_id, user: User):
+    def update_user(self, user_id: int, user: User) -> User:
         if not user or not user_id:
             logger.error(f"User or user ID not defined: {user}")
             raise Exception(f"User or user id not defined: {user}")
@@ -46,7 +46,7 @@ class UserService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return User(result)
 
-    def create_user(self, user: User):
+    def create_user(self, user: User) -> User:
         if not user:
             logger.error(f"User not defined: {user}")
             raise Exception(f"User not defined: {user}")
@@ -55,7 +55,7 @@ class UserService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return User(result)
 
-    def delete_user(self, user_id):
+    def delete_user(self, user_id: int) -> bool:
         if not user_id:
             logger.error(f"User ID not defined: {user_id}")
             raise Exception(f"User id not defined: {user_id}")
@@ -64,7 +64,7 @@ class UserService(BaseGNLBackendService):
         logger.debug(f"User with ID {user_id} deleted successfully")
         return True
 
-    def get_all_users(self, limit: int = None, offset: int = None):
+    def get_all_users(self, limit: int | None = None, offset: int | None = None) -> list[User]:
         logger.debug("Fetching all users")
         users = self.get("users", limit=limit, offset=offset)
         logger.debug(f"Received response: {users}")
