@@ -6,13 +6,13 @@ logger = logging.getLogger(__name__)
 
 class FantasyTeamService(BaseGNLBackendService):
     
-    def get_fantasy_team(self, team_id: int):
+    def get_fantasy_team(self, team_id: int) -> FantasyTeam:
         logger.debug(f"Fetching fantasy team with ID: {team_id}")
         result = self.get(f"fantasy/teams/{team_id}")
         logger.debug(f"Received response: {result}")
         return FantasyTeam(result)
     
-    def update_team(self, team_id, fteam: FantasyTeam):
+    def update_team(self, team_id: int, fteam: FantasyTeam) -> FantasyTeam:
         if not fteam or not team_id:
             logger.error(f"Fantasy Team or team ID not defined: {fteam}")
             raise Exception(f"Fantasy Team or team id not defined: {fteam}")
@@ -21,7 +21,7 @@ class FantasyTeamService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return FantasyTeam(result)
     
-    def create_team(self, fteam: FantasyTeam):
+    def create_team(self, fteam: FantasyTeam) -> FantasyTeam:
         if not fteam:
             logger.error(f"Fantasy Team not defined: {fteam}")
             raise Exception(f"Fantasy Team not defined: {fteam}")
@@ -30,7 +30,7 @@ class FantasyTeamService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return FantasyTeam(result)
     
-    def delete_team(self, team_id):
+    def delete_team(self, team_id: int) -> bool:
         if not team_id:
             logger.error(f"Fantasy Team ID not defined: {team_id}")
             raise Exception(f"Fantasy Team id not defined: {team_id}")
@@ -39,7 +39,7 @@ class FantasyTeamService(BaseGNLBackendService):
         logger.debug(f"Fantasy Team with ID {team_id} deleted successfully")
         return True
     
-    def search_team(self, search_string, limit: int = None, offset: int = None):
+    def search_team(self, search_string: str, limit: int | None = None, offset: int | None = None) -> list[FantasyTeam]:
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
@@ -49,14 +49,14 @@ class FantasyTeamService(BaseGNLBackendService):
         l = [FantasyTeam(team) for team in teams]
         return l
 
-    def get_all_teams(self, limit: int = None, offset: int = None):
+    def get_all_teams(self, limit: int | None = None, offset: int | None = None) -> list[FantasyTeam]:
         logger.debug("Fetching all fantasy teams")
         teams = self.get("fantasy/teams", limit=limit, offset=offset)
         logger.debug(f"Received response: {teams}")
         l = [FantasyTeam(team) for team in teams]
         return l
 
-    def add_players(self, team_id, player_ids: list):
+    def add_players(self, team_id: int, player_ids: list[int]) -> FantasyTeam:
         if not team_id:
             logger.error(f"Fantady Team ID not defined: {team_id}")
             raise Exception(f"Fantady Team id not defined: {team_id}")
@@ -68,7 +68,7 @@ class FantasyTeamService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return FantasyTeam(result)
     
-    def remove_players(self, team_id, player_ids: list):
+    def remove_players(self, team_id: int, player_ids: list[int]) -> FantasyTeam:
         if not team_id:
             logger.error(f"Fantasy Team ID not defined: {team_id}")
             raise Exception(f"Fantasy Team id not defined: {team_id}")

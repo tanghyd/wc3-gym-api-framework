@@ -1,9 +1,10 @@
+from typing import Any
 from datetime import datetime
 from gnl_api_framework.model.user import User
 from gnl_api_framework.model.match import Match
 
 class Series:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
         self.match_id = data.get('match_id')
         match = data.get('match')
@@ -32,7 +33,7 @@ class Series:
         self.host_player_id = data.get('host_player_id')
         self.is_fantasy_match = data.get('is_fantasy_match')
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             'match_id': self.match_id,
             'date_time': self.date_time.isoformat() if isinstance(self.date_time, datetime) else self.date_time,
@@ -47,7 +48,7 @@ class Series:
             'is_fantasy_match': self.is_fantasy_match
         }
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (
             f"Series(id={self.id}, "
             f"match_id={self.match_id}, match={self.match}, "

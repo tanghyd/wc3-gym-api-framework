@@ -1,8 +1,9 @@
+from typing import Any
 from abc import ABC, abstractmethod
 import logging
 import requests
 import jwt
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class BaseGNLBackendService(ABC):
         HEAD = "HEAD"
         OPTIONS = "OPTIONS"
 
-    def __init__(self, url, admin_token):
+    def __init__(self, url: str, admin_token: str) -> None:
         self.admin_token = admin_token
         self.url = url
         self.token = None
@@ -24,7 +25,7 @@ class BaseGNLBackendService(ABC):
         logger.debug("Bakend URL: " + self.url)
 
 
-    def send_request(self, method, url, data=None, headers=None, params=None):
+    def send_request(self, method: str, url: str, data: dict[str, Any] | None = None, headers: dict[str, str] | None = None, params: dict[str, Any] | None = None) -> Any:  # noqa: ANN401
         try:
             # Send the request
             logger.debug(f"Send Reqest with Method:{method}, URL: {url}, data:{data}, headers:{headers}, params:{params}")
@@ -49,37 +50,36 @@ class BaseGNLBackendService(ABC):
             raise Exception(f"An exception occurred: {str(e)}")
 
 
-    def login(self):
+    def login(self) -> None:
         if not self.refresh_token:
-            response = self.send_request(method=self.HTTPMethods.POST, url=self.buildURL("/login"), data={'token':self.admin_token})
+            response = self.send_request(method=self.HTTPMethods.POST, url=self.build_url("/login"), data={'token':self.admin_token})
             if response and response.get('access_token'):
                 self.token = response.get('access_token')
                 self.refresh_token = response.get('refresh_token')
             else:
                 raise Exception(f"Login not successful, token could not be retreived: {response}")                
         else:
-            response = self.send_request(method=self.HTTPMethods.POST, url=self.buildURL("/refresh"), headers={'Authorization':f"Bearer {self.refresh_token}"})
+            response = self.send_request(method=self.HTTPMethods.POST, url=self.build_url("/refresh"), headers={'Authorization':f"Bearer {self.refresh_token}"})
             if response and response.get('access_token'):
                 self.token = response.get('access_token')
             else:
                 raise Exception(f"Login not successful, token could not be retreived: {response}")
 
-    def buildURL(self, endpoint: str):
-        if endpoint.startswith('/'):
-            endpoint = endpoint[1:]
+    def build_url(self, endpoint: str) -> str:
+        endpoint = endpoint.removeprefix('/')
         return f"{self.url}/{endpoint}"
 
-    def get(self, endpoint, params=None, limit: int = None, offset: int = None):
+    def get(self, endpoint: str, params: dict[str, Any] | None = None, limit: int | None = None, offset: int | None = None) -> Any:  # noqa: ANN401
         params = self.add_paging_params(params, limit, offset)
-        return self.send_request(method=self.HTTPMethods.GET, url=self.buildURL(endpoint), params=params)
+        return self.send_request(method=self.HTTPMethods.GET, url=self.build_url(endpoint), params=params)
 
-    def search(self, endpoint: str, search_str: str = None, limit: int = None, offset: int = None):
+    def search(self, endpoint: str, search_str: str | None = None, limit: int | None = None, offset: int | None = None) -> Any:  # noqa: ANN401
         params = {'query': search_str} if search_str else {}
         params = self.add_paging_params(params, limit, offset)
-        return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint), params=params)
+        return self.send_request(method=self.HTTPMethods.POST, url=self.build_url(endpoint), params=params)
 
     @staticmethod
-    def add_paging_params(params: dict, limit: int = None, offset: int = None):
+    def add_paging_params(params: dict[str, Any] | None, limit: int | None = None, offset: int | None = None) -> dict[str, Any] | None:
         params = dict(params) if params else {}
         if limit is not None:
             params['limit'] = limit
@@ -88,27 +88,27 @@ class BaseGNLBackendService(ABC):
         return params or None
 
 
-    def post(self, endpoint, data: dict):
+    def post(self, endpoint: str, data: dict[str, Any] | None) -> Any:  # noqa: ANN401
         if self.is_token_expired():
             self.login()
         if data:
-            return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
+            return self.send_request(method=self.HTTPMethods.POST, url=self.build_url(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
         else:
-            return self.send_request(method=self.HTTPMethods.POST, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"})
+            return self.send_request(method=self.HTTPMethods.POST, url=self.build_url(endpoint), headers={'Authorization':f"Bearer {self.token}"})
 
-    def delete(self, endpoint, data=None):
+    def delete(self, endpoint: str, data: dict[str, Any] | None = None) -> Any:  # noqa: ANN401
         if self.is_token_expired():
             self.login()
         if data:
-            return self.send_request(method=self.HTTPMethods.DELETE, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
-        return self.send_request(method=self.HTTPMethods.DELETE, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"})
+            return self.send_request(method=self.HTTPMethods.DELETE, url=self.build_url(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
+        return self.send_request(method=self.HTTPMethods.DELETE, url=self.build_url(endpoint), headers={'Authorization':f"Bearer {self.token}"})
 
-    def put(self, endpoint, data: dict):
+    def put(self, endpoint: str, data: dict[str, Any]) -> Any:  # noqa: ANN401
         if self.is_token_expired():
             self.login()
-        return self.send_request(method=self.HTTPMethods.PUT, url=self.buildURL(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
+        return self.send_request(method=self.HTTPMethods.PUT, url=self.build_url(endpoint), headers={'Authorization':f"Bearer {self.token}"}, data=data)
 
-    def is_token_expired(self):
+    def is_token_expired(self) -> bool:
         try:
             if not self.token:
                 return True
@@ -116,7 +116,7 @@ class BaseGNLBackendService(ABC):
             decoded = jwt.decode(self.token, options={"verify_signature": False})
             
             # Get the current time in UTC
-            current_time = datetime.now(timezone.utc).timestamp()
+            current_time = datetime.now(UTC).timestamp()
             
             # Check the `exp` claim
             if "exp" in decoded:

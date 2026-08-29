@@ -1,6 +1,7 @@
+from typing import Any
 from gnl_api_framework.model.map import Map
 class Season:
-    def __init__(self, data: dict):
+    def __init__(self, data: dict[str, Any]) -> None:
         self.id = data.get('id')
         self.name = data.get('name')
         self.number_weeks = data.get('number_weeks')
@@ -11,7 +12,7 @@ class Season:
             maps = [Map(map) for map in maps]
         self.maps = maps
 
-    def to_dict(self):
+    def to_dict(self) -> dict[str, Any]:
         return {
             'name': self.name,
             'number_weeks': self.number_weeks,
@@ -19,7 +20,7 @@ class Season:
             'series_per_week': self.series_per_week
         }
     
-    def __str__(self):
+    def __str__(self) -> str:
         maps_str = None
         if self.maps:
             maps_str = ", ".join(

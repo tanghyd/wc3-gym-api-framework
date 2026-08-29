@@ -6,13 +6,13 @@ logger = logging.getLogger(__name__)
 
 class TeamService(BaseGNLBackendService):
     
-    def get_team(self, team_id: int):
+    def get_team(self, team_id: int) -> Team:
         logger.debug(f"Fetching team with ID: {team_id}")
         result = self.get(f"teams/{team_id}")
         logger.debug(f"Received response: {result}")
         return Team(result)
     
-    def update_team(self, team_id, team: Team):
+    def update_team(self, team_id: int, team: Team) -> Team:
         if not team or not team_id:
             logger.error(f"Team or team ID not defined: {team}")
             raise Exception(f"Team or team id not defined: {team}")
@@ -21,7 +21,7 @@ class TeamService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Team(result)
     
-    def create_team(self, team: Team):
+    def create_team(self, team: Team) -> Team:
         if not team:
             logger.error(f"Team not defined: {team}")
             raise Exception(f"Team not defined: {team}")
@@ -30,7 +30,7 @@ class TeamService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Team(result)
     
-    def delete_team(self, team_id):
+    def delete_team(self, team_id: int) -> bool:
         if not team_id:
             logger.error(f"Team ID not defined: {team_id}")
             raise Exception(f"Team id not defined: {team_id}")
@@ -39,7 +39,7 @@ class TeamService(BaseGNLBackendService):
         logger.debug(f"Team with ID {team_id} deleted successfully")
         return True
     
-    def search_team(self, search_string, limit: int = None, offset: int = None):
+    def search_team(self, search_string: str, limit: int | None = None, offset: int | None = None) -> list[Team]:
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
@@ -49,27 +49,27 @@ class TeamService(BaseGNLBackendService):
         l = [Team(team) for team in teams]
         return l
 
-    def get_all_teams(self, limit: int = None, offset: int = None):
+    def get_all_teams(self, limit: int | None = None, offset: int | None = None) -> list[Team]:
         logger.debug("Fetching all teams")
         teams = self.get("teams", limit=limit, offset=offset)
         logger.debug(f"Received response: {teams}")
         l = [Team(team) for team in teams]
         return l
     
-    def get_teams_for_season(self, season_id: int):
+    def get_teams_for_season(self, season_id: int) -> list[Team]:
         logger.debug(f"Fetching teams for season ID: {season_id}")
         teams = self.get(f"teams/season/{season_id}")
         logger.debug(f"Received response: {teams}")
         l = [Team(team) for team in teams]
         return l
     
-    def get_team_for_season(self, season_id: int, team_id: int):
+    def get_team_for_season(self, season_id: int, team_id: int) -> Team:
         logger.debug(f"Fetching team with ID: {team_id} for season ID: {season_id}")
         result = self.get(f"teams/{team_id}/seasons/{season_id}")
         logger.debug(f"Received response: {result}")
         return Team(result)
 
-    def add_player(self, team_id, season_id, player_ids: list):
+    def add_player(self, team_id: int, season_id: int, player_ids: list[int]) -> Team:
         if not team_id:
             logger.error(f"Team ID not defined: {team_id}")
             raise Exception(f"Team id not defined: {team_id}")
@@ -84,7 +84,7 @@ class TeamService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Team(result)
     
-    def remove_player(self, team_id, season_id, player_ids: list):
+    def remove_player(self, team_id: int, season_id: int, player_ids: list[int]) -> Team:
         if not team_id:
             logger.error(f"Team ID not defined: {team_id}")
             raise Exception(f"Team id not defined: {team_id}")

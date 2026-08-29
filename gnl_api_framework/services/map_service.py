@@ -5,7 +5,7 @@ from gnl_api_framework.model.map import Map
 logger = logging.getLogger(__name__)
 
 class MapService(BaseGNLBackendService):
-    def search_maps(self, search_string, limit: int = None, offset: int = None):
+    def search_maps(self, search_string: str, limit: int | None = None, offset: int | None = None) -> list[Map]:
         if not search_string:
             logger.error(f"Search String not defined: {search_string}")
             raise Exception(f"Search String not defined: {search_string}")
@@ -15,13 +15,13 @@ class MapService(BaseGNLBackendService):
         l = [Map(map) for map in maps]
         return l
 
-    def get_map(self, map_id: int):
+    def get_map(self, map_id: int) -> Map:
         logger.debug(f"Fetching map with ID: {map_id}")
         result = self.get(f"maps/{map_id}")
         logger.debug(f"Received response: {result}")
         return Map(result)
 
-    def update_map(self, map_id, map: Map):
+    def update_map(self, map_id: int, map: Map) -> Map:
         if not map or not map_id:
             logger.error(f"Map or map ID not defined: {map}")
             raise Exception(f"Map or map id not defined: {map}")
@@ -30,7 +30,7 @@ class MapService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Map(result)
 
-    def create_map(self, map: Map):
+    def create_map(self, map: Map) -> Map:
         if not map:
             logger.error(f"Map not defined: {map}")
             raise Exception(f"Map not defined: {map}")
@@ -39,7 +39,7 @@ class MapService(BaseGNLBackendService):
         logger.debug(f"Received response: {result}")
         return Map(result)
 
-    def delete_map(self, map_id):
+    def delete_map(self, map_id: int) -> bool:
         if not map_id:
             logger.error(f"Map ID not defined: {map_id}")
             raise Exception(f"Map id not defined: {map_id}")
@@ -48,7 +48,7 @@ class MapService(BaseGNLBackendService):
         logger.debug(f"Map with ID {map_id} deleted successfully")
         return True
 
-    def get_all_maps(self, limit: int = None, offset: int = None):
+    def get_all_maps(self, limit: int | None = None, offset: int | None = None) -> list[Map]:
         logger.debug("Fetching all maps")
         maps = self.get("maps", limit=limit, offset=offset)
         logger.debug(f"Received response: {maps}")
